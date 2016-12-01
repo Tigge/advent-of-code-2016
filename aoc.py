@@ -1,6 +1,9 @@
+#!/usr/bin/env python3
+
 import argparse
 import importlib
 import sys
+import time
 
 if __name__ == "__main__":
 
@@ -20,10 +23,14 @@ if __name__ == "__main__":
             problem = problem_module.Problem(input_file)
             print("Day", day)
             print("------")
-            if hasattr(problem, 'step1') and callable(getattr(problem, 'step1')):
-                print("Step 1:", problem.step1())
-            if hasattr(problem, 'step2') and callable(getattr(problem, 'step2')):
-                print("Step 2:", problem.step2())
+
+            for step in range(1, 3):
+                function = "step{}".format(step)
+                if hasattr(problem, function) and callable(getattr(problem, function)):
+                    start_time = time.perf_counter()
+                    result = getattr(problem, function)()
+                    end_time = time.perf_counter()
+                    print("Step {}: {} (took {:.2f} µs)".format(step, result, (end_time - start_time) * 1000000))
             print()
         except ImportError as e:
             print("Day", day, "is not implemented yet")
